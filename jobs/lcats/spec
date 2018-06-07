@@ -1,0 +1,27 @@
+---
+name: lcats
+
+description: Acceptance tests for Log Cache
+
+templates:
+  run: bin/run
+  log_cache_ca.crt.erb: config/certs/log_cache_ca.crt
+  log_cache.crt.erb: config/certs/log_cache.crt
+  log_cache.key.erb: config/certs/log_cache.key
+  environment.sh.erb: bin/environment.sh
+
+packages:
+- log-cache-emitter
+- lcats
+- golang1.9.6
+
+consumes:
+- name: log-cache
+  type: log-cache
+
+properties:
+  log_emitter_addr:
+    description: 'The address that the log emitter will listen for http requests on'
+    default: ':8080'
+
+

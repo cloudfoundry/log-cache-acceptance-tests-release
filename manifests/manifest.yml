@@ -1,0 +1,44 @@
+name: lcats
+
+stemcells:
+- alias: default
+  os: ubuntu-trusty
+  version: latest
+
+releases:
+- name: log-cache-acceptance-tests
+  version: latest
+- name: bosh-dns
+  version: 0.2.0
+
+addons:
+- name: bosh-dns
+  include:
+    stemcell:
+    - os: ubuntu-trusty
+  jobs:
+  - name: bosh-dns
+    release: bosh-dns
+
+instance_groups:
+- name: lcats
+  azs:
+  - z1
+  instances: 1
+  vm_type: minimal
+  stemcell: default
+  lifecycle: errand
+  networks:
+  - name: default
+  jobs:
+  - name: lcats
+    release: log-cache-acceptance-tests
+    consumes:
+      log-cache: {from: log-cache, deployment: cf}
+
+update:
+  canaries: 10
+  max_in_flight: 10
+  canary_watch_time: 30000-60000
+  update_watch_time: 5000-60000
+  serial: true

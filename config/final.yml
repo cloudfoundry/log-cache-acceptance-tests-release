@@ -1,0 +1,5 @@
+name: log-cache-acceptance-tests
+blobstore:
+  provider: s3
+  options:
+    bucket_name: log-cache-acceptance-tests-blobs
