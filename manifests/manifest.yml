@@ -35,7 +35,7 @@ instance_groups:
     release: log-cache-acceptance-tests
     consumes:
       log-cache: {from: log-cache, deployment: cf}
-      log-cache-group-reader: {from: log-cache, deployment: cf}
+      log-cache-group-reader: {from: log-cache-group-reader, deployment: cf}
 
 update:
   canaries: 10
