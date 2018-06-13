@@ -1,4 +1,6 @@
 export LOG_CACHE_ADDR="<%= "#{link('log-cache').address}:#{link('log-cache').p('port')}" %>"
+export GROUP_READER_ADDR="<%= "#{link('log-cache-group-reader').address}:#{link('log-cache-group-reader').p('port')}" %>"
+
 export LOG_EMITTER_ADDR="<%= p('log_emitter_addr') %>"
 export CA_PATH="/var/vcap/jobs/lcats/config/certs/log_cache_ca.crt"
 export CERT_PATH="/var/vcap/jobs/lcats/config/certs/log_cache.crt"
