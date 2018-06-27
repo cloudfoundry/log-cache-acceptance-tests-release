@@ -36,6 +36,12 @@ instance_groups:
     consumes:
       log-cache: {from: log-cache, deployment: cf}
       log-cache-group-reader: {from: log-cache-group-reader, deployment: cf}
+    properties:
+      log_cache_cf_auth_proxy: ((log_cache_cf_auth_proxy))
+      uaa_url: ((uaa_url))
+      client_id: ((client_id))
+      client_secret: ((client_secret))
+      skip_cert_verify: ((skip_cert_verify))
 
 update:
   canaries: 10

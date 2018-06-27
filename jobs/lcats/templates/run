@@ -12,17 +12,19 @@ source /var/vcap/jobs/lcats/bin/environment.sh
 
 pushd /var/vcap/packages/log-cache-emitter
     export ADDR="$LOG_EMITTER_ADDR"
-    exec chpst -u vcap:vcap ./log-cache-emitter >> "${LOG_DIR}/log-cache-emitter.log" &
+    exec chpst -u vcap:vcap ./log-cache-emitter &> "${LOG_DIR}/log-cache-emitter.log" &
 
     trap "kill -9 $(ps aux | grep "./log-cache-emitter" | grep vcap | awk '{print $2}')" EXIT
 popd
 
-pushd /var/vcap/packages/lcats/src/github.com/cloudfoundry/log-cache-acceptance-tests
+cd /var/vcap/packages/lcats/src/github.com/cloudfoundry/log-cache-acceptance-tests
 
-echo $(go version)
+ginkgo build .
 
-echo "Running logging acceptance tests..." >> "${LOG_DIR}/log-cache-emitter.log"
-
-ginkgo -r -slowSpecThreshold 30
+ginkgo -p log-cache-acceptance-tests.test -r \
+    -slowSpecThreshold 30 \
+    -progress \
+    -trace \
+    -keepGoing
 
 exit 0

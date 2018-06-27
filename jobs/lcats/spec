@@ -24,6 +24,16 @@ consumes:
 properties:
   log_emitter_addr:
     description: 'The address that the log emitter will listen for http requests on'
-    default: ':8080'
-
+    default: 'localhost:8080'
+  log_cache_cf_auth_proxy:
+    description: 'The URL that gets registered in cf for the log-cache-cf-auth-proxy'
+  uaa_url:
+    description: 'UAA HTTP URL used for the http client tests'
+  client_id:
+    description: 'UAA client id used for the http client tests'
+  client_secret:
+    description: 'UAA client secret used for the http client tests'
+  skip_cert_verify:
+    description: 'Skip SSL validation for CF authentication used for the http client tests'
+    default: false
 
