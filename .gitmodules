@@ -45,4 +45,4 @@
 	url = https://github.com/grpc/grpc-go
 [submodule "src/code.cloudfoundry.org/rfc5424"]
 	path = src/code.cloudfoundry.org/rfc5424
-	url = git@code.cloudfoundry.org:rfc5424
+	url = https://github.com/cloudfoundry-incubator/rfc5424
