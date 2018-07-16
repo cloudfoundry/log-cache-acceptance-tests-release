@@ -19,6 +19,18 @@ addons:
   jobs:
   - name: bosh-dns
     release: bosh-dns
+    properties:
+      api:
+        client:
+          tls:
+            ca: ((dns_api_tls_ca.certificate))
+            certificate: ((dns_api_client_tls.certificate))
+            private_key: ((dns_api_client_tls.private_key))
+        server:
+          tls:
+            ca: ((dns_api_tls_ca.certificate))
+            certificate: ((dns_api_server_tls.certificate))
+            private_key: ((dns_api_server_tls.private_key))
 
 instance_groups:
 - name: lcats
