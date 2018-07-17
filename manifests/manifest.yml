@@ -51,8 +51,8 @@ instance_groups:
     properties:
       log_cache_cf_auth_proxy: ((log_cache_cf_auth_proxy))
       uaa_url: ((uaa_url))
-      client_id: ((client_id))
-      client_secret: ((client_secret))
+      client_id: lcats
+      client_secret: ((lcats_client_secret))
       skip_cert_verify: ((skip_cert_verify))
 
 update:
