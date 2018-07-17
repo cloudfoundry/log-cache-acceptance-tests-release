@@ -14,7 +14,7 @@ pushd /var/vcap/packages/log-cache-emitter
     export ADDR="$LOG_EMITTER_ADDR"
     exec chpst -u vcap:vcap ./log-cache-emitter &> "${LOG_DIR}/log-cache-emitter.log" &
 
-    trap "kill -9 $(ps aux | grep "./log-cache-emitter" | head -n 1 | awk '{print $2}')" EXIT
+    trap "kill -9 $(ps aux -u vcap | grep "log-cache-emitter" | head -n 1 | awk '{print $2}')" EXIT
 popd
 
 cd /var/vcap/packages/lcats/src/github.com/cloudfoundry/log-cache-acceptance-tests
