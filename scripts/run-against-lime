@@ -1,0 +1,92 @@
+#!/bin/bash
+
+set -exu
+
+CERT_DIR=$(mktemp -d)
+trap cleanup EXIT
+trap cleanup SIGINT
+CHILD_PIDS=""
+
+function cleanup {
+    rm -rf ${CERT_DIR}
+
+    kill ${CHILD_PIDS}
+}
+
+function spawn_bg {
+    nohup "$@" > /dev/null 2>&1 &
+    CHILD_PIDS="${CHILD_PIDS} $!"
+}
+
+function forward_port {
+    local dest=$1
+    local port=$2
+
+    local local_port=1${port}
+    spawn_bg bosh -d cf ssh doppler/0 --opts="-L localhost:${local_port}:${dest}:${port}" --opts="-N"
+}
+
+function forward_port_to_doppler {
+    local port=$1
+
+    if [[ -z ${DOPPLER_IP:-} ]]; then
+        DOPPLER_IP=$(bosh -d cf vms | awk '/doppler/ {print $4}' | head -n 1)
+    fi
+
+    forward_port ${DOPPLER_IP} ${port}
+}
+
+pushd ~/workspace/log-cache-deployments/gcp/lime
+    set +x
+        source .envrc
+    set -x
+
+    # Check that we're connected to bosh
+    bosh environment > /dev/null
+
+    # Get certs and keys
+    bosh int deployment-vars.yml --path=/log_cache/ca > ${CERT_DIR}/ca.crt
+    export CA_PATH=${CERT_DIR}/ca.crt
+    bosh int deployment-vars.yml --path=/log_cache/certificate > ${CERT_DIR}/lc.crt
+    export CERT_PATH=${CERT_DIR}/lc.crt
+    bosh int deployment-vars.yml --path=/log_cache/private_key > ${CERT_DIR}/lc.key
+    export KEY_PATH=${CERT_DIR}/lc.key
+
+    export UAA_URL=https://uaa.lime.loggr.cf-app.com
+    export SKIP_CERT_VERIFY=true
+    export CLIENT_ID=admin
+    export CLIENT_SECRET=$(bosh int deployment-vars.yml --path=/uaa_admin_client_secret)
+
+    # Log Cache GRPC
+    forward_port_to_doppler 8080
+    export LOG_CACHE_ADDR=localhost:18080
+    # Log Cache CF OAuth Proxy
+    forward_port_to_doppler 8083
+    export LOG_CACHE_CF_AUTH_PROXY_URL=http://localhost:18083
+    # Group Reader GRPC
+    forward_port_to_doppler 8084
+    export GROUP_READER_ADDR=localhost:18084
+popd
+
+pushd ~/workspace/go/src/github.com/cloudfoundry-incubator/log-cache-tools/log-cache-emitter
+    go build .
+    bosh -d cf ssh doppler/0 "sudo rm /tmp/log-cache-emitter"
+    bosh -d cf scp ./log-cache-emitter doppler/0:/tmp/log-cache-emitter
+    emitter_env=""
+    emitter_env="${emitter_env} CA_PATH=/var/vcap/jobs/log-cache/config/certs/ca.crt"
+    emitter_env="${emitter_env} CERT_PATH=/var/vcap/jobs/log-cache/config/certs/log_cache.crt"
+    emitter_env="${emitter_env} KEY_PATH=/var/vcap/jobs/log-cache/config/certs/log_cache.key"
+    emitter_env="${emitter_env} LOG_CACHE_ADDR=localhost:8080"
+    emitter_env="${emitter_env} ADDR=localhost:9090"
+    spawn_bg bosh -d cf ssh doppler/0 -c "cp /tmp/log-cache-emitter .; chmod +x log-cache-emitter; env ${emitter_env} ./log-cache-emitter"
+    forward_port localhost 9090
+    export LOG_EMITTER_ADDR=localhost:19090
+popd
+
+until curl -s localhost:19090 > /dev/null; do
+    sleep 1s
+done
+
+pushd src/github.com/cloudfoundry/log-cache-acceptance-tests/
+    ginkgo -r -v
+popd
