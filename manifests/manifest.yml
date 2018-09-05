@@ -26,7 +26,6 @@ instance_groups:
     release: log-cache-acceptance-tests
     consumes:
       log-cache: {from: log-cache, deployment: cf}
-      log-cache-group-reader: {from: log-cache-group-reader, deployment: cf}
     properties:
       log_cache_cf_auth_proxy: ((log_cache_cf_auth_proxy))
       uaa_url: ((uaa_url))
