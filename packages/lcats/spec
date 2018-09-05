@@ -26,6 +26,11 @@ files:
 - github.com/grpc-ecosystem/grpc-gateway/runtime/internal/*.go # gosub
 - github.com/grpc-ecosystem/grpc-gateway/utilities/*.go # gosub
 - github.com/hpcloud/tail/*.go # gosub
+- github.com/hpcloud/tail/ratelimiter/*.go # gosub
+- github.com/hpcloud/tail/util/*.go # gosub
+- github.com/hpcloud/tail/vendor/gopkg.in/fsnotify/fsnotify.v1/*.go # gosub
+- github.com/hpcloud/tail/vendor/gopkg.in/tomb.v1/*.go # gosub
+- github.com/hpcloud/tail/watch/*.go # gosub
 - github.com/nu7hatch/gouuid/*.go # gosub
 - github.com/onsi/ginkgo/*.go # gosub
 - github.com/onsi/ginkgo/config/*.go # gosub
@@ -68,6 +73,7 @@ files:
 - golang.org/x/net/internal/timeseries/*.go # gosub
 - golang.org/x/net/trace/*.go # gosub
 - golang.org/x/sys/unix/*.go # gosub
+- golang.org/x/sys/unix/*.s # gosub
 - golang.org/x/text/encoding/*.go # gosub
 - golang.org/x/text/encoding/charmap/*.go # gosub
 - golang.org/x/text/encoding/htmlindex/*.go # gosub
