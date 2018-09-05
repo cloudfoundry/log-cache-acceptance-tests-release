@@ -63,9 +63,6 @@ pushd ~/workspace/log-cache-deployments/gcp/lime
     # Log Cache CF OAuth Proxy
     forward_port_to_doppler 8083
     export LOG_CACHE_CF_AUTH_PROXY_URL=http://localhost:18083
-    # Group Reader GRPC
-    forward_port_to_doppler 8084
-    export GROUP_READER_ADDR=localhost:18084
 
     export LOG_EMIT_TIMEOUT=20s
 popd
