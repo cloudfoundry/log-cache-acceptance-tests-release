@@ -49,3 +49,6 @@
 [submodule "src/golang.org/x/sys"]
 	path = src/golang.org/x/sys
 	url = https://github.com/golang/sys
+[submodule "src/github.com/hpcloud/tail"]
+	path = src/github.com/hpcloud/tail
+	url = https://github.com/hpcloud/tail
