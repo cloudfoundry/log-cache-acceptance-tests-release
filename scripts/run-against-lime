@@ -66,6 +66,8 @@ pushd ~/workspace/log-cache-deployments/gcp/lime
     # Group Reader GRPC
     forward_port_to_doppler 8084
     export GROUP_READER_ADDR=localhost:18084
+
+    export LOG_EMIT_TIMEOUT=20s
 popd
 
 pushd ~/workspace/go/src/github.com/cloudfoundry-incubator/log-cache-tools/log-cache-emitter
