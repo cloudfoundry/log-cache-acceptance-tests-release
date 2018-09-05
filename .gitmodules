@@ -46,9 +46,3 @@
 [submodule "src/code.cloudfoundry.org/rfc5424"]
 	path = src/code.cloudfoundry.org/rfc5424
 	url = https://github.com/cloudfoundry-incubator/rfc5424
-[submodule "src/hpcloud/tail"]
-	path = src/hpcloud/tail
-	url = git@github.com:hpcloud/tail
-[submodule "src/golang.org/x/sys"]
-	path = src/golang.org/x/sys
-	url = git@github.com:golang/sys
