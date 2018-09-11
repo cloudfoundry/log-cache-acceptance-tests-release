@@ -8,8 +8,6 @@ stemcells:
 releases:
 - name: log-cache-acceptance-tests
   version: latest
-- name: bosh-dns
-  version: latest
 
 instance_groups:
 - name: lcats
