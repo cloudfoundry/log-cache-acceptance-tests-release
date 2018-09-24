@@ -8,10 +8,10 @@ dependencies:
 files:
 - github.com/onsi/ginkgo/**/*.go
 - code.cloudfoundry.org/go-envstruct/*.go # gosub
-- code.cloudfoundry.org/go-log-cache/*.go # gosub
-- code.cloudfoundry.org/go-log-cache/internal/*.go # gosub
-- code.cloudfoundry.org/go-log-cache/rpc/logcache_v1/*.go # gosub
 - code.cloudfoundry.org/go-loggregator/rpc/loggregator_v2/*.go # gosub
+- code.cloudfoundry.org/log-cache/client/*.go # gosub
+- code.cloudfoundry.org/log-cache/internal/gateway/*.go # gosub
+- code.cloudfoundry.org/log-cache/rpc/logcache_v1/*.go # gosub
 - code.cloudfoundry.org/rfc5424/*.go # gosub
 - github.com/cloudfoundry/log-cache-acceptance-tests/*.go # gosub
 - github.com/cloudfoundry/log-cache-acceptance-tests/tests/*.go # gosub

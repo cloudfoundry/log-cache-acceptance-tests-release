@@ -37,7 +37,7 @@ function sync_package() {
   )
 }
 
-sync_package log-cache-emitter -app  github.com/cloudfoundry-incubator/loggregator-tools/log-cache-emitter &
+sync_package log-cache-emitter -app  github.com/cloudfoundry-incubator/log-cache-tools/log-cache-emitter &
 sync_package lcats             -app  github.com/cloudfoundry/log-cache-acceptance-tests/tests &
 
 wait

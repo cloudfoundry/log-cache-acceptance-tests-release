@@ -1,6 +1,3 @@
-[submodule "src/github.com/cloudfoundry-incubator/loggregator-tools"]
-	path = src/github.com/cloudfoundry-incubator/loggregator-tools
-	url = https://github.com/cloudfoundry-incubator/loggregator-tools
 [submodule "src/github.com/grpc-ecosystem/grpc-gateway"]
 	path = src/github.com/grpc-ecosystem/grpc-gateway
 	url = https://github.com/grpc-ecosystem/grpc-gateway
@@ -22,9 +19,6 @@
 [submodule "src/code.cloudfoundry.org/go-loggregator"]
 	path = src/code.cloudfoundry.org/go-loggregator
 	url = https://github.com/cloudfoundry/go-loggregator
-[submodule "src/code.cloudfoundry.org/go-log-cache"]
-	path = src/code.cloudfoundry.org/go-log-cache
-	url = https://github.com/cloudfoundry/go-log-cache
 [submodule "src/code.cloudfoundry.org/go-envstruct"]
 	path = src/code.cloudfoundry.org/go-envstruct
 	url = https://github.com/cloudfoundry/go-envstruct
@@ -52,3 +46,9 @@
 [submodule "src/github.com/hpcloud/tail"]
 	path = src/github.com/hpcloud/tail
 	url = https://github.com/hpcloud/tail
+[submodule "src/code.cloudfoundry.org/log-cache"]
+	path = src/code.cloudfoundry.org/log-cache
+	url = https://github.com/cloudfoundry-incubator/log-cache
+[submodule "src/github.com/cloudfoundry-incubator/log-cache-tools"]
+	path = src/github.com/cloudfoundry-incubator/log-cache-tools
+	url = https://github.com/cloudfoundry-incubator/log-cache-tools
