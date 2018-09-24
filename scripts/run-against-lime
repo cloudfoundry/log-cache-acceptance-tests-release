@@ -45,17 +45,21 @@ pushd ~/workspace/log-cache-deployments/gcp/lime
     bosh environment > /dev/null
 
     # Get certs and keys
-    bosh int deployment-vars.yml --path=/log_cache/ca > ${CERT_DIR}/ca.crt
+    credhub get -n /bosh-lime/cf/log_cache > /tmp/log-cache-certs.yml
+    bosh int /tmp/log-cache-certs.yml --path=/value/ca > ${CERT_DIR}/ca.crt
     export CA_PATH=${CERT_DIR}/ca.crt
-    bosh int deployment-vars.yml --path=/log_cache/certificate > ${CERT_DIR}/lc.crt
+    bosh int /tmp/log-cache-certs.yml --path=/value/certificate > ${CERT_DIR}/lc.crt
     export CERT_PATH=${CERT_DIR}/lc.crt
-    bosh int deployment-vars.yml --path=/log_cache/private_key > ${CERT_DIR}/lc.key
+    bosh int /tmp/log-cache-certs.yml --path=/value/private_key > ${CERT_DIR}/lc.key
     export KEY_PATH=${CERT_DIR}/lc.key
+    rm /tmp/log-cache-certs.yml
 
+    credhub get -n /bosh-lime/cf/lcats_client_secret > /tmp/uaa-client-secret.yml
     export UAA_URL=https://uaa.lime.loggr.cf-app.com
     export SKIP_CERT_VERIFY=true
-    export CLIENT_ID=admin
-    export CLIENT_SECRET=$(bosh int deployment-vars.yml --path=/uaa_admin_client_secret)
+    export CLIENT_ID=lcats
+    export CLIENT_SECRET=$(bosh int /tmp/uaa-client-secret.yml --path=/value | head -n1 | awk '{print $1};')
+    rm /tmp/uaa-client-secret.yml
 
     # Log Cache GRPC
     forward_port_to_doppler 8080
@@ -69,7 +73,7 @@ popd
 
 pushd ~/workspace/go/src/github.com/cloudfoundry-incubator/log-cache-tools/log-cache-emitter
     go build .
-    bosh -d cf ssh doppler/0 "sudo rm /tmp/log-cache-emitter"
+    bosh -d cf ssh doppler/0 "sudo rm -f /tmp/log-cache-emitter"
     bosh -d cf scp ./log-cache-emitter doppler/0:/tmp/log-cache-emitter
     emitter_env=""
     emitter_env="${emitter_env} CA_PATH=/var/vcap/jobs/log-cache/config/certs/ca.crt"
