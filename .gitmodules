@@ -52,3 +52,6 @@
 [submodule "src/github.com/cloudfoundry-incubator/log-cache-tools"]
 	path = src/github.com/cloudfoundry-incubator/log-cache-tools
 	url = https://github.com/cloudfoundry-incubator/log-cache-tools
+[submodule "src/github.com/blang/semver"]
+	path = src/github.com/blang/semver
+	url = https://github.com/blang/semver
