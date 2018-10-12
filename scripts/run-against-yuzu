@@ -36,16 +36,19 @@ function forward_port_to_doppler {
     forward_port ${DOPPLER_IP} ${port}
 }
 
-pushd ~/workspace/log-cache-deployments/gcp/lime
+pushd ~/workspace/denver-locks
+
     set +x
-        source .envrc
+        source ~/workspace/denver-bash-it/custom/environment-targeting.bash
     set -x
+
+    bosh-target yuzu
 
     # Check that we're connected to bosh
     bosh environment > /dev/null
 
     # Get certs and keys
-    credhub get -n /bosh-lime/cf/log_cache > /tmp/log-cache-certs.yml
+    credhub get -n /bosh-yuzu/cf/log_cache > /tmp/log-cache-certs.yml
     bosh int /tmp/log-cache-certs.yml --path=/value/ca > ${CERT_DIR}/ca.crt
     export CA_PATH=${CERT_DIR}/ca.crt
     bosh int /tmp/log-cache-certs.yml --path=/value/certificate > ${CERT_DIR}/lc.crt
@@ -54,8 +57,8 @@ pushd ~/workspace/log-cache-deployments/gcp/lime
     export KEY_PATH=${CERT_DIR}/lc.key
     rm /tmp/log-cache-certs.yml
 
-    credhub get -n /bosh-lime/cf/lcats_client_secret > /tmp/uaa-client-secret.yml
-    export UAA_URL=https://uaa.lime.loggr.cf-app.com
+    credhub get -n /bosh-yuzu/cf/lcats_client_secret > /tmp/uaa-client-secret.yml
+    export UAA_URL=https://uaa.yuzu.cf-denver.com
     export SKIP_CERT_VERIFY=true
     export CLIENT_ID=lcats
     export CLIENT_SECRET=$(bosh int /tmp/uaa-client-secret.yml --path=/value | head -n1 | awk '{print $1};')
@@ -91,5 +94,7 @@ until curl -s localhost:19090 > /dev/null; do
 done
 
 pushd src/github.com/cloudfoundry/log-cache-acceptance-tests/
+    go get github.com/onsi/ginkgo/ginkgo
+    go get github.com/onsi/gomega
     ginkgo -r -v
 popd
