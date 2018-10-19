@@ -58,3 +58,6 @@
 [submodule "src/github.com/prometheus/common"]
 	path = src/github.com/prometheus/common
 	url = https://github.com/prometheus/common
+[submodule "src/github.com/prometheus/prometheus"]
+	path = src/github.com/prometheus/prometheus
+	url = https://github.com/prometheus/prometheus
