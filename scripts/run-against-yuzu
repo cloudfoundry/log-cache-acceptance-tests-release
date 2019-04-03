@@ -69,9 +69,10 @@ pushd ~/workspace/denver-locks
     export LOG_CACHE_ADDR=localhost:18080
     # Log Cache CF OAuth Proxy
     forward_port_to_doppler 8083
-    export LOG_CACHE_CF_AUTH_PROXY_URL=http://localhost:18083
+    export LOG_CACHE_CF_AUTH_PROXY_URL=https://localhost:18083
 
-    export LOG_EMIT_TIMEOUT=20s
+    export LOG_EMIT_TIMEOUT=30s
+    export DEFAULT_TIMEOUT=30s
 popd
 
 pushd ~/workspace/go/src/github.com/cloudfoundry-incubator/log-cache-tools/log-cache-emitter
