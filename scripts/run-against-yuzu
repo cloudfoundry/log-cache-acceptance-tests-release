@@ -94,7 +94,7 @@ until curl -s localhost:19090 > /dev/null; do
     sleep 1s
 done
 
-pushd src/github.com/cloudfoundry/log-cache-acceptance-tests/
+pushd src/code.cloudfoundry.org/log-cache-acceptance-tests/
     go get github.com/onsi/ginkgo/ginkgo
     go get github.com/onsi/gomega
     ginkgo -r -v

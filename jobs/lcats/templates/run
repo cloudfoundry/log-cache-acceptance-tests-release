@@ -1,30 +1,23 @@
-#!/bin/bash -l
-
-set -e
+#!/bin/bash -le
 
 export LOG_DIR=/var/vcap/sys/log/lcats
 export GOROOT=$(readlink -nf /var/vcap/packages/golang1.12.4)
-export GOPATH=/var/vcap/packages/lcats
-export PATH="${GOROOT}/bin:${GOPATH}/bin:${PATH}"
+export PATH="${GOROOT}/bin:/var/vcap/packages/lcats/bin:${PATH}"
 export CF_COLOR=false
 
 source /var/vcap/jobs/lcats/bin/environment.sh
 
-pushd /var/vcap/packages/log-cache-emitter
-    export ADDR="$LOG_EMITTER_ADDR"
-    exec chpst -u vcap:vcap ./log-cache-emitter &> "${LOG_DIR}/log-cache-emitter.log" &
+cd /var/vcap/packages/lcats
 
-    trap "kill -9 $(ps aux -u vcap | grep "log-cache-emitter" | head -n 1 | awk '{print $2}')" EXIT
-popd
+export ADDR="$LOG_EMITTER_ADDR"
+exec chpst -u vcap:vcap log-cache-emitter  &> "${LOG_DIR}/log-cache-emitter.log" &
 
-cd /var/vcap/packages/lcats/src/github.com/cloudfoundry/log-cache-acceptance-tests
+trap "kill -9 $(ps aux -u vcap | grep "log-cache-emitter" | head -n 1 | awk '{print $2}')" EXIT
 
-ginkgo build .
-
-ginkgo -p log-cache-acceptance-tests.test -r \
-    -slowSpecThreshold 30 \
-    -progress \
-    -trace \
-    -keepGoing
+ginkgo -p bin/lcats.test -r \
+  -slowSpecThreshold 30 \
+  -progress \
+  -trace \
+  -keepGoing
 
 exit 0
