@@ -13,7 +13,7 @@ templates:
 packages:
 - log-cache-emitter
 - lcats
-- golang1.9.6
+- golang1.12.4
 
 consumes:
 - name: log-cache

@@ -2,7 +2,7 @@
 name: lcats
 
 dependencies:
-- golang1.9.6
+- golang1.12.4
 - log-cache-emitter
 
 files:

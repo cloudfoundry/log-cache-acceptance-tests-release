@@ -3,7 +3,7 @@
 set -e
 
 export LOG_DIR=/var/vcap/sys/log/lcats
-export GOROOT=$(readlink -nf /var/vcap/packages/golang1.9.6)
+export GOROOT=$(readlink -nf /var/vcap/packages/golang1.12.4)
 export GOPATH=/var/vcap/packages/lcats
 export PATH="${GOROOT}/bin:${GOPATH}/bin:${PATH}"
 export CF_COLOR=false
