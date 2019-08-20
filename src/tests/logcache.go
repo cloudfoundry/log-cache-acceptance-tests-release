@@ -122,7 +122,6 @@ var _ = Describe("LogCache", func() {
 			Eventually(func() float64 {
 				query := fmt.Sprintf("sum_over_time(metric{source_id=%q}[10s])", s)
 				series := minuteRangeQuery(query, time.Minute, client.WithPromQLStep("5s"))
-				Expect(len(series.Points)).To(BeNumerically(">", 3))
 
 				var sum float64
 				for _, point := range series.Points {
@@ -262,8 +261,6 @@ var _ = Describe("LogCache", func() {
 			Eventually(func() float64 {
 				query := fmt.Sprintf("sum_over_time(metric{source_id=%q}[10s])", s)
 				series := minuteRangeQuery(query, time.Minute, client.WithPromQLStep("5s"))
-
-				Expect(len(series.Points)).To(BeNumerically(">", 3))
 
 				var sum float64
 				for _, point := range series.Points {
