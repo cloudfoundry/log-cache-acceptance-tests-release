@@ -129,7 +129,7 @@ var _ = Describe("LogCache", func() {
 				}
 
 				return sum
-			}, 30).Should(BeEquivalentTo(2 * 100000.0))
+			}, 60).Should(BeEquivalentTo(2 * 100000.0))
 		})
 
 		It("validates that CPU for the doppler VM is under 50%", func() {
@@ -249,7 +249,7 @@ var _ = Describe("LogCache", func() {
 			}
 
 			// wait for gauges to be processed
-			Eventually(performQuery, 30).Should(BeEquivalentTo(100000.0))
+			Eventually(performQuery, 60).Should(BeEquivalentTo(100000.0))
 			Consistently(performQuery, 30).Should(BeEquivalentTo(100000.0))
 		})
 
@@ -268,7 +268,7 @@ var _ = Describe("LogCache", func() {
 				}
 
 				return sum
-			}, 30).Should(BeEquivalentTo(2 * 100000.0))
+			}, 60).Should(BeEquivalentTo(2 * 100000.0))
 		})
 
 		It("validates that CPU for the doppler VM is under 50%", func() {
