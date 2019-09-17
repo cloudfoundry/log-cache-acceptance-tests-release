@@ -39,8 +39,9 @@ var _ = Describe("LogCache", func() {
 		Expect(err).ToNot(HaveOccurred())
 
 		matrix := result.GetMatrix()
-		Expect(matrix).ToNot(BeNil())
-		Expect(matrix.Series).ToNot(BeEmpty())
+		if matrix == nil || len(matrix.Series) == 0 {
+			return nil
+		}
 
 		return matrix.Series[0]
 	}
