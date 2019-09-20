@@ -23,7 +23,7 @@ var _ = Describe("LogCache", func() {
 		cfg            *TestConfig
 	)
 
-	var minuteRangeQuery = func(query string, duration time.Duration, opts ...client.PromQLOption) *logcache_v1.PromQL_Series {
+	var minuteRangeQuery = func(query string, duration time.Duration, opts ...client.PromQLOption) []*logcache_v1.PromQL_Point {
 		now := time.Now()
 		ctx, _ := context.WithTimeout(context.Background(), cfg.DefaultTimeout)
 
@@ -39,11 +39,11 @@ var _ = Describe("LogCache", func() {
 		Expect(err).ToNot(HaveOccurred())
 
 		matrix := result.GetMatrix()
-		if matrix == nil || len(matrix.Series) == 0 {
+		if matrix == nil || len(matrix.GetSeries()) == 0 || matrix.GetSeries()[0] == nil {
 			return nil
 		}
 
-		return matrix.Series[0]
+		return matrix.GetSeries()[0].GetPoints()
 	}
 
 	Context("with grpc client", func() {
@@ -122,10 +122,10 @@ var _ = Describe("LogCache", func() {
 
 			Eventually(func() float64 {
 				query := fmt.Sprintf("sum_over_time(metric{source_id=%q}[10s])", s)
-				series := minuteRangeQuery(query, time.Minute, client.WithPromQLStep("5s"))
+				points := minuteRangeQuery(query, time.Minute, client.WithPromQLStep("5s"))
 
 				var sum float64
-				for _, point := range series.Points {
+				for _, point := range points {
 					sum += point.GetValue()
 				}
 
@@ -135,35 +135,35 @@ var _ = Describe("LogCache", func() {
 
 		It("validates that CPU for the doppler VM is under 50%", func() {
 			query := `avg_over_time(system_cpu_sys{source_id="system_metrics_agent", job="doppler"}[1m])`
-			series := minuteRangeQuery(query, time.Minute, client.WithPromQLStep("10s"))
+			points := minuteRangeQuery(query, time.Minute, client.WithPromQLStep("10s"))
 
 			var sum float64
-			for _, point := range series.Points {
+			for _, point := range points {
 				sum += point.GetValue()
 			}
-			Expect(sum / float64(len(series.Points))).To(BeNumerically("<", 50))
+			Expect(sum / float64(len(points))).To(BeNumerically("<", 50))
 		})
 
 		It("validates that memory for the doppler VM is under 90%", func() {
 			query := `avg_over_time(system_mem_percent{source_id="system_metrics_agent", job="doppler"}[1m])`
-			series := minuteRangeQuery(query, time.Minute, client.WithPromQLStep("10s"))
+			points := minuteRangeQuery(query, time.Minute, client.WithPromQLStep("10s"))
 
 			var sum float64
-			for _, point := range series.Points {
+			for _, point := range points {
 				sum += point.GetValue()
 			}
-			Expect(sum / float64(len(series.Points))).To(BeNumerically("<", 90))
+			Expect(sum / float64(len(points))).To(BeNumerically("<", 90))
 		})
 
 		It("validates that swapping for the doppler VM is under 5%", func() {
 			query := `avg_over_time(system_swap_percent{source_id="system_metrics_agent", job="doppler"}[1m])`
-			series := minuteRangeQuery(query, time.Minute, client.WithPromQLStep("10s"))
+			points := minuteRangeQuery(query, time.Minute, client.WithPromQLStep("10s"))
 
 			var sum float64
-			for _, point := range series.Points {
+			for _, point := range points {
 				sum += point.GetValue()
 			}
-			Expect(sum / float64(len(series.Points))).To(BeNumerically("<", 5))
+			Expect(sum / float64(len(points))).To(BeNumerically("<", 5))
 		})
 	})
 
@@ -261,10 +261,10 @@ var _ = Describe("LogCache", func() {
 
 			Eventually(func() float64 {
 				query := fmt.Sprintf("sum_over_time(metric{source_id=%q}[10s])", s)
-				series := minuteRangeQuery(query, time.Minute, client.WithPromQLStep("5s"))
+				points := minuteRangeQuery(query, time.Minute, client.WithPromQLStep("5s"))
 
 				var sum float64
-				for _, point := range series.Points {
+				for _, point := range points {
 					sum += point.GetValue()
 				}
 
@@ -274,35 +274,35 @@ var _ = Describe("LogCache", func() {
 
 		It("validates that CPU for the doppler VM is under 50%", func() {
 			query := `avg_over_time(system_cpu_sys{source_id="system_metrics_agent", job="doppler"}[2m])`
-			series := minuteRangeQuery(query, 2*time.Minute, client.WithPromQLStep("10s"))
+			points := minuteRangeQuery(query, 2*time.Minute, client.WithPromQLStep("10s"))
 
 			var sum float64
-			for _, point := range series.Points {
+			for _, point := range points {
 				sum += point.GetValue()
 			}
-			Expect(sum / float64(len(series.Points))).To(BeNumerically("<", 50))
+			Expect(sum / float64(len(points))).To(BeNumerically("<", 50))
 		})
 
 		It("validates that memory for the doppler VM is under 90%", func() {
 			query := `avg_over_time(system_mem_percent{source_id="system_metrics_agent", job="doppler"}[2m])`
-			series := minuteRangeQuery(query, 2*time.Minute, client.WithPromQLStep("10s"))
+			points := minuteRangeQuery(query, 2*time.Minute, client.WithPromQLStep("10s"))
 
 			var sum float64
-			for _, point := range series.Points {
+			for _, point := range points {
 				sum += point.GetValue()
 			}
-			Expect(sum / float64(len(series.Points))).To(BeNumerically("<", 90))
+			Expect(sum / float64(len(points))).To(BeNumerically("<", 90))
 		})
 
 		It("validates that swapping for the doppler VM is under 5%", func() {
 			query := `avg_over_time(system_swap_percent{source_id="system_metrics_agent", job="doppler"}[2m])`
-			series := minuteRangeQuery(query, 2*time.Minute, client.WithPromQLStep("10s"))
+			points := minuteRangeQuery(query, 2*time.Minute, client.WithPromQLStep("10s"))
 
 			var sum float64
-			for _, point := range series.Points {
+			for _, point := range points {
 				sum += point.GetValue()
 			}
-			Expect(sum / float64(len(series.Points))).To(BeNumerically("<", 5))
+			Expect(sum / float64(len(points))).To(BeNumerically("<", 5))
 		})
 	})
 })
