@@ -64,10 +64,11 @@ var _ = Describe("LogCache", func() {
 
 			start := time.Now()
 			emitLogs([]string{s})
-			end := time.Now()
+			end := time.Now().Add(5 * time.Second)
 
-			received := countEnvelopes(start, end, logCacheClient.Read, s, 10000)
-			Expect(received).To(BeNumerically(">=", 9900))
+			Eventually(func() int {
+				return countEnvelopes(start, end, logCacheClient.Read, s, 10000)
+			}, time.Minute).Should(BeNumerically(">=", 9900))
 		})
 
 		It("lists the available source ids that log cache has persisted", func() {
@@ -75,13 +76,14 @@ var _ = Describe("LogCache", func() {
 
 			emitLogs([]string{s})
 
-			ctx, _ := context.WithTimeout(context.Background(), cfg.DefaultTimeout)
-			meta, err := logCacheClient.Meta(ctx)
-			Expect(err).ToNot(HaveOccurred())
-			Expect(meta).To(HaveKey(s))
+			Eventually(func() int64 {
+				ctx, _ := context.WithTimeout(context.Background(), cfg.DefaultTimeout)
+				meta, err := logCacheClient.Meta(ctx)
+				Expect(err).ToNot(HaveOccurred())
+				Expect(meta).To(HaveKey(s))
 
-			count := meta[s].GetCount()
-			Expect(count).To(BeNumerically(">=", 9900))
+				return meta[s].GetCount()
+			}, time.Minute).Should(BeNumerically(">=", 9900))
 		})
 
 		It("can query for emitted metrics with PromQL™ Instant Queries©", func() {
