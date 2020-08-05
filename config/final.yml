@@ -1,4 +1,5 @@
 name: log-cache-acceptance-tests
+final_name: log-cache-acceptance-tests
 blobstore:
   provider: s3
   options:
