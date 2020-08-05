@@ -1,13 +1,14 @@
 package tests
 
 import (
-	"code.cloudfoundry.org/log-cache/pkg/rpc/logcache_v1"
 	"context"
 	"crypto/tls"
 	"fmt"
 	"net/http"
 	"strings"
 	"time"
+
+	"code.cloudfoundry.org/log-cache/pkg/rpc/logcache_v1"
 
 	"code.cloudfoundry.org/go-loggregator/rpc/loggregator_v2"
 	"code.cloudfoundry.org/log-cache/pkg/client"
@@ -134,39 +135,6 @@ var _ = Describe("LogCache", func() {
 				return sum
 			}, 60).Should(BeEquivalentTo(2 * 100000.0))
 		})
-
-		It("validates that CPU for the doppler VM is under 50%", func() {
-			query := `avg_over_time(system_cpu_sys{source_id="system_metrics_agent", job="doppler"}[1m])`
-			points := minuteRangeQuery(query, time.Minute, client.WithPromQLStep("10s"))
-
-			var sum float64
-			for _, point := range points {
-				sum += point.GetValue()
-			}
-			Expect(sum / float64(len(points))).To(BeNumerically("<", 50))
-		})
-
-		It("validates that memory for the doppler VM is under 90%", func() {
-			query := `avg_over_time(system_mem_percent{source_id="system_metrics_agent", job="doppler"}[1m])`
-			points := minuteRangeQuery(query, time.Minute, client.WithPromQLStep("10s"))
-
-			var sum float64
-			for _, point := range points {
-				sum += point.GetValue()
-			}
-			Expect(sum / float64(len(points))).To(BeNumerically("<", 90))
-		})
-
-		It("validates that swapping for the doppler VM is under 5%", func() {
-			query := `avg_over_time(system_swap_percent{source_id="system_metrics_agent", job="doppler"}[1m])`
-			points := minuteRangeQuery(query, time.Minute, client.WithPromQLStep("10s"))
-
-			var sum float64
-			for _, point := range points {
-				sum += point.GetValue()
-			}
-			Expect(sum / float64(len(points))).To(BeNumerically("<", 5))
-		})
 	})
 
 	Context("with http client", func() {
@@ -272,39 +240,6 @@ var _ = Describe("LogCache", func() {
 
 				return sum
 			}, 60).Should(BeEquivalentTo(2 * 100000.0))
-		})
-
-		It("validates that CPU for the doppler VM is under 50%", func() {
-			query := `avg_over_time(system_cpu_sys{source_id="system_metrics_agent", job="doppler"}[2m])`
-			points := minuteRangeQuery(query, 2*time.Minute, client.WithPromQLStep("10s"))
-
-			var sum float64
-			for _, point := range points {
-				sum += point.GetValue()
-			}
-			Expect(sum / float64(len(points))).To(BeNumerically("<", 50))
-		})
-
-		It("validates that memory for the doppler VM is under 90%", func() {
-			query := `avg_over_time(system_mem_percent{source_id="system_metrics_agent", job="doppler"}[2m])`
-			points := minuteRangeQuery(query, 2*time.Minute, client.WithPromQLStep("10s"))
-
-			var sum float64
-			for _, point := range points {
-				sum += point.GetValue()
-			}
-			Expect(sum / float64(len(points))).To(BeNumerically("<", 90))
-		})
-
-		It("validates that swapping for the doppler VM is under 5%", func() {
-			query := `avg_over_time(system_swap_percent{source_id="system_metrics_agent", job="doppler"}[2m])`
-			points := minuteRangeQuery(query, 2*time.Minute, client.WithPromQLStep("10s"))
-
-			var sum float64
-			for _, point := range points {
-				sum += point.GetValue()
-			}
-			Expect(sum / float64(len(points))).To(BeNumerically("<", 5))
 		})
 	})
 })
